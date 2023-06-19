@@ -1,0 +1,40 @@
+name: "Generate Typescript types and deploy them as npm package"
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+jobs:
+  generate:
+    name: "Generate Typescript types"
+    runs-on: ubuntu-latest
+    steps:
+      - id: setup-node
+        name: 'Setup Node 18'
+        uses: actions/setup-node@v2
+        with:
+          node-version: '18'
+      - id: pull-latest-from-main
+        name: 'Get latest codebase from main'
+        uses: actions/checkout@v3
+        with:
+          repository: 'cmxiv/google-workspace-addon-json-schema'
+          ref: main
+      - id: install-quicktype
+        name: 'Install quicktype'
+        run: |
+          npm install -g quicktype
+      - id: generate-types
+        name: 'Generate types'
+        run: |
+          mkdir generated
+          quicktype --just-types --lang typescript -s schema --src RenderActionResponse.schema.json -o generated/RenderAction.ts
+          quicktype --just-types --lang typescript -s schema --src Card.schema.json -o generated/Card.ts
+          quicktype --just-types --lang typescript -s schema --src CommonEvent.schema.json -o generated/Event.ts
+          quicktype --just-types --lang typescript -s schema --src Deployment.schema.json -o generated/Deployment.ts
+      - id: upload-generated-types-as-artifacts
+        name: 'Upload generated types as artifacts'
+        uses: actions/upload-artifact@v3
+        with:
+          name: google-workspace-addon-typescript
+          path: generated
