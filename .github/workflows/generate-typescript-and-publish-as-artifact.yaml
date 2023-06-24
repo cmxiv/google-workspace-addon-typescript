@@ -15,9 +15,14 @@ jobs:
         with:
           node-version: '18'
       - id: pull-latest-from-main
+        uses: actions/checkout@v3
+        with:
+          path: main
+      - id: pull-latest-schema-files
         name: 'Get latest schema files'
         uses: actions/checkout@v3
         with:
+          sparse-checkout: '*.schema.json'
           repository: 'cmxiv/google-workspace-addon-json-schema'
           ref: main
       - id: install-quicktype
