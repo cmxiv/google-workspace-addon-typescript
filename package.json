@@ -5,5 +5,11 @@
   "main": "index.js",
   "repository": "https://github.com/cmxiv/google-workspace-addon-typescript",
   "author": "Siddhant Tandon <cmxiv914@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "scripts": {
+    "release": "standard-version"
+  },
+  "devDependencies": {
+    "standard-version": "^9.5.0"
+  }
 }
