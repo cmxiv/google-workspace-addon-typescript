@@ -15,34 +15,29 @@ jobs:
         with:
           node-version: '18'
       - id: pull-latest-from-main
+        name: 'Get latest code from main branch'
         uses: actions/checkout@v3
         with:
-          path: main
+          ref: main
       - id: pull-latest-schema-files
         name: 'Get latest schema files'
         uses: actions/checkout@v3
         with:
-          sparse-checkout: '*.schema.json'
           repository: 'cmxiv/google-workspace-addon-json-schema'
           ref: main
+          path: schema
       - id: install-quicktype
         name: 'Install quicktype'
         run: |
-          ls -lrta
           npm install -g quicktype
       - id: generate-types
         name: 'Generate types'
         run: |
-          quicktype --just-types --lang typescript -s schema --src RenderActionResponse.schema.json -o RenderAction.ts
-          quicktype --just-types --lang typescript -s schema --src Card.schema.json -o Card.ts
-          quicktype --just-types --lang typescript -s schema --src CommonEvent.schema.json -o Event.ts
-          quicktype --just-types --lang typescript -s schema --src Deployment.schema.json -o Deployment.ts
-      - id: cleanup-schema-files
-        name: 'Cleanup Schema files'
+          quicktype --just-types --lang typescript -s schema --src schema/RenderActionResponse.schema.json -o RenderAction.ts
+          quicktype --just-types --lang typescript -s schema --src schema/Card.schema.json -o Card.ts
+          quicktype --just-types --lang typescript -s schema --src schema/CommonEvent.schema.json -o Event.ts
+          quicktype --just-types --lang typescript -s schema --src schema/Deployment.schema.json -o Deployment.ts
+      - id: remove-schema-files
+        name: 'Remove schema files'
         run: |
-          rm -rf *.schema.json
-      - id: list-everything
-        name: 'List everything'
-        run: |
-          ls -lrta
-          git status
+          rm -rf schema
