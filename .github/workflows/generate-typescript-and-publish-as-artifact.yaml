@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '18'
       - id: pull-latest-from-main
-        name: 'Get latest codebase from main'
+        name: 'Get latest schema files'
         uses: actions/checkout@v3
         with:
           repository: 'cmxiv/google-workspace-addon-json-schema'
@@ -23,18 +23,21 @@ jobs:
       - id: install-quicktype
         name: 'Install quicktype'
         run: |
+          ls -lrta
           npm install -g quicktype
       - id: generate-types
         name: 'Generate types'
         run: |
-          mkdir generated
-          quicktype --just-types --lang typescript -s schema --src RenderActionResponse.schema.json -o generated/RenderAction.ts
-          quicktype --just-types --lang typescript -s schema --src Card.schema.json -o generated/Card.ts
-          quicktype --just-types --lang typescript -s schema --src CommonEvent.schema.json -o generated/Event.ts
-          quicktype --just-types --lang typescript -s schema --src Deployment.schema.json -o generated/Deployment.ts
-      - id: upload-generated-types-as-artifacts
-        name: 'Upload generated types as artifacts'
-        uses: actions/upload-artifact@v3
-        with:
-          name: google-workspace-addon-typescript
-          path: generated
+          quicktype --just-types --lang typescript -s schema --src RenderActionResponse.schema.json -o RenderAction.ts
+          quicktype --just-types --lang typescript -s schema --src Card.schema.json -o Card.ts
+          quicktype --just-types --lang typescript -s schema --src CommonEvent.schema.json -o Event.ts
+          quicktype --just-types --lang typescript -s schema --src Deployment.schema.json -o Deployment.ts
+      - id: cleanup-schema-files
+        name: 'Cleanup Schema files'
+        run: |
+          rm -rf *.schema.json
+      - id: list-everything
+        name: 'List everything'
+        run: |
+          ls -lrta
+          git status
