@@ -69,18 +69,17 @@ jobs:
           git config user.email "github-actions@example.com"
           git config user.name "GitHub Actions"
           echo "Releasing using flags = ${{ env.release-flags }}"
-          npm run release ${{ env.release-flags }}
-          git push
-          
+          npm run release ${{ env.release-flags }}          
           cp package.json generated/package.json
           cp package-lock.json generated/package-lock.json
           cp README.md generated/README.md
-      - id: set-version
-        name: 'Set version'
+      - id: set-version-and-push
+        name: 'Set version and push'
         if: ${{ env.do-release == 'true' }}
         run: |
+          git push
           version=$(jq ".version" package.json --raw-output)
-          echo "New tag to be created = $version"
+          echo "### :shipit: New tag to be created $version :tada:" >> $GITHUB_STEP_SUMMARY
           echo "version=$version" >> $GITHUB_ENV
       - id: upload-generated-types-as-artifacts
         name: 'Upload generated types as artifacts'
