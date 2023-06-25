@@ -21,12 +21,14 @@ jobs:
         name: 'Setup dry-run environment'
         if: ${{ inputs.dry-run }}
         run: |
-          echo "release-flags='-- --dry-run'" >> $GITHUB_ENV
+          echo "release-flags=-- --dry-run" >> $GITHUB_ENV
+          echo "do-release=false" >> $GITHUB_ENV
       - id: setup-environment
         name: 'Setup environment'
         if: ${{ !inputs.dry-run }}
         run: |
           echo "release-flags=${{ inputs.release-flags }}" >> $GITHUB_ENV
+          echo "do-release=true" >> $GITHUB_ENV
       - id: setup-node
         name: 'Setup Node 18'
         uses: actions/setup-node@v2
@@ -66,17 +68,18 @@ jobs:
           npm install
           git config user.email "github-actions@example.com"
           git config user.name "GitHub Actions"
+          echo "Releasing using flags = ${{ env.release-flags }}"
           npm run release ${{ env.release-flags }}
       - id: push-new-tag
         name: 'Push the new tag'
-        if: ${{ inputs.do-release }}
+        if: ${{ env.do-release == 'true' }}
         run: |
           git push --follow-tags origin main
           version=$(jq ".version" package.json --raw-output)
           echo "version=$version" >> $GITHUB_OUTPUT
       - id: upload-generated-types-as-artifacts
         name: 'Upload generated types as artifacts'
-        if: ${{ inputs.do-release }}
+        if: ${{ env.do-release == 'true' }}
         uses: actions/upload-artifact@v3
         with:
           name: google-workspace-addon-typescript-${{ steps.create-release.outputs.version }}
