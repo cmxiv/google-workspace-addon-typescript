@@ -92,8 +92,6 @@ jobs:
           ${{ secrets.NPM_TOKEN }}
           EOF
           npm publish
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 #      - id: upload-generated-types-as-artifacts
 #        name: 'Upload generated types as artifacts'
 #        if: ${{ env.do-release == 'true' }}
