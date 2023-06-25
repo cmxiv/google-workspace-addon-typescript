@@ -33,11 +33,28 @@ jobs:
       - id: generate-types
         name: 'Generate types'
         run: |
-          quicktype --just-types --lang typescript -s schema --src schema/RenderActionResponse.schema.json -o RenderAction.ts
-          quicktype --just-types --lang typescript -s schema --src schema/Card.schema.json -o Card.ts
-          quicktype --just-types --lang typescript -s schema --src schema/CommonEvent.schema.json -o Event.ts
-          quicktype --just-types --lang typescript -s schema --src schema/Deployment.schema.json -o Deployment.ts
+          mkdir generated
+          quicktype --just-types --lang typescript -s schema --src schema/Card.schema.json -o generated/Card.ts
+          quicktype --just-types --lang typescript -s schema --src schema/CommonEvent.schema.json -o generated/Event.ts
+          quicktype --just-types --lang typescript -s schema --src schema/Deployment.schema.json -o generated/Deployment.ts
+          quicktype --just-types --lang typescript -s schema --src schema/RenderActionResponse.schema.json -o generated/RenderAction.ts
       - id: remove-schema-files
         name: 'Remove schema files'
         run: |
           rm -rf schema
+      - id: create-release
+        name: 'Create release'
+        run: |
+          npm install
+          git config user.email "github-actions@example.com"
+          git config user.name "GitHub Actions"
+          npm run release -- --first-release
+          git push --follow-tags origin main
+          version=$(jq ".version" package.json --raw-output)
+          echo "version=$version" >> $GITHUB_OUTPUT
+      - id: upload-generated-types-as-artifacts
+        name: 'Upload generated types as artifacts'
+        uses: actions/upload-artifact@v3
+        with:
+          name: google-workspace-addon-typescript-${{ steps.create-release.outputs.version }}
+          path: generated
