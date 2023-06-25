@@ -7,10 +7,10 @@ on:
         default: ''
         type: string
         required: false
-      dry-run:
-        description: 'Dry run'
+      do-release:
+        description: 'Push the tags and package to npm'
         type: boolean
-        default: false
+        default: true
         required: true
 jobs:
   generate:
@@ -58,15 +58,15 @@ jobs:
           git config user.name "GitHub Actions"
           npm run release ${{ inputs.release-flags }}
       - id: push-new-tag
-        name: 'push the new tag'
-        if: inputs.dry-run
+        name: 'Push the new tag'
+        if: ${{ inputs.do-release }}
         run: |
           git push --follow-tags origin main
           version=$(jq ".version" package.json --raw-output)
           echo "version=$version" >> $GITHUB_OUTPUT
       - id: upload-generated-types-as-artifacts
         name: 'Upload generated types as artifacts'
-        if: inputs.dry-run
+        if: ${{ inputs.do-release }}
         uses: actions/upload-artifact@v3
         with:
           name: google-workspace-addon-typescript-${{ steps.create-release.outputs.version }}
