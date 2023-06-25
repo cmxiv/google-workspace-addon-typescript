@@ -1,9 +1,6 @@
 name: "Generate Typescript types and deploy them as npm package"
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 jobs:
   generate:
     name: "Generate Typescript types"
@@ -48,7 +45,7 @@ jobs:
           npm install
           git config user.email "github-actions@example.com"
           git config user.name "GitHub Actions"
-          npm run release -- --first-release
+          npm run release
           git push --follow-tags origin main
           version=$(jq ".version" package.json --raw-output)
           echo "version=$version" >> $GITHUB_OUTPUT
