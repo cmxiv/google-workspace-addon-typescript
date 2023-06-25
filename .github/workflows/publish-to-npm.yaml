@@ -1,0 +1,14 @@
+name: "Publish the tagged version"
+on:
+  push:
+    tags:
+      - "v*.*.*"
+jobs:
+  publish-to-npm:
+    name: "Publish to npm"
+    runs-on: ubuntu-latest
+    steps:
+      - id: test-run
+        name: 'Test Run'
+        run: |
+          echo $GITHUB_REF
