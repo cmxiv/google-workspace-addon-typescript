@@ -87,6 +87,10 @@ jobs:
         if: ${{ env.do-release == 'true' }}
         working-directory: generated
         run: |
+          npm login --auth-type=legacy << EOF
+          cmxiv
+          $NPM_TOKEN
+          EOF
           npm publish
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
