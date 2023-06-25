@@ -4,7 +4,7 @@ on:
     inputs:
       release-flags:
         description: 'Release flags to passed to standard-version'
-        default: ''
+        default: '-- --first-release'
         type: string
         required: false
       dry-run:
@@ -69,22 +69,31 @@ jobs:
           git config user.email "github-actions@example.com"
           git config user.name "GitHub Actions"
           echo "Releasing using flags = ${{ env.release-flags }}"
-          npm run release ${{ env.release-flags }}          
+          npm run release ${{ env.release-flags }}
+      - id: copy-supporting-files
+        name: 'Copy supporting files to the generated types'
+        run: |
+          cp .npmrc generated/.npmrc
+          cp README.md generated/README.md
           cp package.json generated/package.json
           cp package-lock.json generated/package-lock.json
-          cp README.md generated/README.md
-      - id: set-version-and-push
-        name: 'Set version and push'
+      - id: push-tag-and-updated-changelog-md
+        name: 'Push tag and updated CHANGELOG.md'
         if: ${{ env.do-release == 'true' }}
         run: |
-          git push
-          version=$(jq ".version" package.json --raw-output)
-          echo "### :shipit: New tag to be created $version :tada:" >> $GITHUB_STEP_SUMMARY
-          echo "version=$version" >> $GITHUB_ENV
-      - id: upload-generated-types-as-artifacts
-        name: 'Upload generated types as artifacts'
+          git push --follow-tags origin main
+      - id: publish-to-npm
+        name: 'Publish to npm'
         if: ${{ env.do-release == 'true' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: google-workspace-addon-types-${{ env.version }}
-          path: generated
+        working-directory: generated
+        run: |
+          npm publish
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+#      - id: upload-generated-types-as-artifacts
+#        name: 'Upload generated types as artifacts'
+#        if: ${{ env.do-release == 'true' }}
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: google-workspace-addon-types-${{ env.version }}
+#          path: generated
