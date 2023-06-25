@@ -7,16 +7,26 @@ on:
         default: ''
         type: string
         required: false
-      do-release:
-        description: 'Push the tags and package to npm'
+      dry-run:
+        description: 'Do a dry-run (if selected would override release flags)'
         type: boolean
-        default: true
+        default: false
         required: true
 jobs:
   generate:
     name: "Generate Typescript types"
     runs-on: ubuntu-latest
     steps:
+      - id: setup-dry-run-environment
+        name: 'Setup dry-run environment'
+        if: ${{ inputs.dry-run }}
+        run: |
+          echo "release-flags='-- --dry-run'" >> $GITHUB_ENV
+      - id: setup-environment
+        name: 'Setup environment'
+        if: ${{ !inputs.dry-run }}
+        run: |
+          echo "release-flags=${{ inputs.release-flags }}" >> $GITHUB_ENV
       - id: setup-node
         name: 'Setup Node 18'
         uses: actions/setup-node@v2
@@ -56,7 +66,7 @@ jobs:
           npm install
           git config user.email "github-actions@example.com"
           git config user.name "GitHub Actions"
-          npm run release ${{ inputs.release-flags }}
+          npm run release ${{ env.release-flags }}
       - id: push-new-tag
         name: 'Push the new tag'
         if: ${{ inputs.do-release }}
