@@ -6,7 +6,7 @@ on:
         description: 'Release flags to passed to standard-version'
         default: ''
         type: string
-        required: true
+        required: false
       dry-run:
         description: 'Dry run'
         type: boolean
