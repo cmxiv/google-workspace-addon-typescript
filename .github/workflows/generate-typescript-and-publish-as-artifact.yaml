@@ -1,6 +1,17 @@
 name: "Generate Typescript types and deploy them as npm package"
 on:
   workflow_dispatch:
+    inputs:
+      release-flags:
+        description: 'Release flags to passed to standard-version'
+        default: ''
+        type: string
+        required: true
+      dry-run:
+        description: 'Dry run'
+        type: boolean
+        default: false
+        required: true
 jobs:
   generate:
     name: "Generate Typescript types"
@@ -45,12 +56,17 @@ jobs:
           npm install
           git config user.email "github-actions@example.com"
           git config user.name "GitHub Actions"
-          npm run release
+          npm run release ${{ inputs.release-flags }}
+      - id: push-new-tag
+        name: 'push the new tag'
+        if: inputs.dry-run
+        run: |
           git push --follow-tags origin main
           version=$(jq ".version" package.json --raw-output)
           echo "version=$version" >> $GITHUB_OUTPUT
       - id: upload-generated-types-as-artifacts
         name: 'Upload generated types as artifacts'
+        if: inputs.dry-run
         uses: actions/upload-artifact@v3
         with:
           name: google-workspace-addon-typescript-${{ steps.create-release.outputs.version }}
