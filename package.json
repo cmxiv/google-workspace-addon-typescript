@@ -8,6 +8,11 @@
   "scripts": {
     "release": "standard-version"
   },
+  "standard-version": {
+    "skip": {
+      "tag": true
+    }
+  },
   "devDependencies": {
     "standard-version": "9.5.0"
   }

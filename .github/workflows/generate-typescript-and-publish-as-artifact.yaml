@@ -70,17 +70,22 @@ jobs:
           git config user.name "GitHub Actions"
           echo "Releasing using flags = ${{ env.release-flags }}"
           npm run release ${{ env.release-flags }}
-      - id: push-new-tag
-        name: 'Push the new tag'
+          git push
+          
+          cp package.json generated/package.json
+          cp package-lock.json generated/package-lock.json
+          cp README.md generated/README.md
+      - id: set-version
+        name: 'Set version'
         if: ${{ env.do-release == 'true' }}
         run: |
-          git push --follow-tags origin main
           version=$(jq ".version" package.json --raw-output)
-          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "New tag to be created = $version"
+          echo "version=$version" >> $GITHUB_ENV
       - id: upload-generated-types-as-artifacts
         name: 'Upload generated types as artifacts'
         if: ${{ env.do-release == 'true' }}
         uses: actions/upload-artifact@v3
         with:
-          name: google-workspace-addon-typescript-${{ steps.create-release.outputs.version }}
+          name: google-workspace-addon-types-${{ env.version }}
           path: generated
