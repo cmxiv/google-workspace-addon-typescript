@@ -89,7 +89,7 @@ jobs:
         run: |
           npm login --auth-type=legacy << EOF
           cmxiv
-          $NPM_TOKEN
+          ${{ secrets.NPM_TOKEN }}
           EOF
           npm publish
         env:
