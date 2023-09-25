@@ -29,10 +29,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
       - id: generate-types
         name: 'Generate the typescript types'
-        run: npm run build
+        run: |
+          npm i
+          npm run build
       - id: publish
         name: 'Publish to NPM'
-        run: |
-          npm publish --dry-run
+        run: npm publish --dry-run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
