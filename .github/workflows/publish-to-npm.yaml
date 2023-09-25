@@ -10,6 +10,18 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: main
+      - id: setup-git-user
+        name: Setup git user
+        run: |
+          git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+          git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+      - id: generate-a-version-patch
+        name: 'Generate version patch for later'
+        run: npm version patch
       - id: pull-latest-schema-files
         name: 'Get latest schema files'
         uses: actions/checkout@v4
@@ -23,10 +35,6 @@ jobs:
       - id: copy-remaining-schema-files
         name: 'Copy remaining schema files'
         run: cp -r schema/* .
-      - uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          registry-url: 'https://registry.npmjs.org'
       - id: generate-types
         name: 'Generate the typescript types'
         run: |
@@ -40,6 +48,11 @@ jobs:
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
-      - id: commit-version-changes
-        name: 'Commit bumped up version'
-        run: git status
+      - id: clean-up-after-publish
+        name: 'Clean up after publish'
+        run: |
+          rm *.schema.json *.ts *.sh
+          rm -rf examples generated schema
+      - id: push-version-changes
+        name: 'Push the bumped up version'
+        run: git push
