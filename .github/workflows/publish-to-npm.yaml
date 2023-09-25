@@ -29,9 +29,6 @@ jobs:
           repository: 'cmxiv/google-workspace-addon-json-schema'
           ref: main
           path: schema
-      - id: delete-schema-package-json-and-yarn-lock
-        name: 'Delete schema package.json and yarn.lock'
-        run: rm schema/package.json schema/yarn.lock
       - id: copy-remaining-schema-files
         name: 'Copy remaining schema files'
         run: cp -r schema/* .
