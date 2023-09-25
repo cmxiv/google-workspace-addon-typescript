@@ -1,14 +1,17 @@
 {
   "name": "google-workspace-addon-typescript",
   "version": "1.0.0",
-  "description": "Google Workspace Addon typescript bindings",
-  "repository": "https://github.com/cmxiv/google-workspace-addon-typescript",
+  "description": "Google Workspace Addon typescript types",
+  "repository": "https://github.com/cmxiv/google-workspace-addon-json-schema",
   "author": "Siddhant Tandon <cmxiv914@gmail.com>",
   "license": "MIT",
+  "files": [
+    "generated/typescript/**"
+  ],
   "scripts": {
-    "release": "standard-version"
+    "build": "sh generate.sh typescript ts"
   },
-  "devDependencies": {
-    "standard-version": "9.5.0"
+  "dependencies": {
+    "quicktype": "^23.0.75"
   }
 }

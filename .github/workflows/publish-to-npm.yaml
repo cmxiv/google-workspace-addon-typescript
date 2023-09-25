@@ -7,21 +7,32 @@ jobs:
     steps:
       - id: pull-latest-from-main
         name: 'Get latest code from main branch'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
-      - id: extract-tag-ref
-        name: 'Extract tag from $GITHUB_REF'
+      - id: pull-latest-schema-files
+        name: 'Get latest schema files'
+        uses: actions/checkout@v4
+        with:
+          repository: 'cmxiv/google-workspace-addon-json-schema'
+          ref: main
+          path: schema
+      - id: delete-schema-package-json-and-yarn-lock
+        name: 'Delete schema package.json and yarn.lock'
+        run: rm schema/package.json schema/yarn.lock
+      - id: copy-remaining-schema-files
+        name: 'Copy remaining schema files'
+        run: cp schema/* .
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+      - id: generate-types
+        name: 'Generate the typescript types'
+        run: npm run build
+      - id: publish
+        name: 'Publish to NPM'
         run: |
-          npm config set //registry.npmjs.org/:_authToken ${{ secrets.NPM_TOKEN }}
-          npm config set //registry.npmjs.org/:username cmxiv
-          npm config set //registry.npmjs.org/:email cmxiv914@gmail.com
-          npm ci
-          npm login --auth-type=legacy --registry=https://registry.npmjs.org
-      - id: with-error
-        name: 'with error'
-        if: ${{ failure() }}
-        run: |
-          ls -lrta
-          cp /home/runner/.npm/_logs/*.log .
-          cat *.log
+          npm publish --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
