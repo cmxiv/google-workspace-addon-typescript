@@ -32,8 +32,14 @@ jobs:
         run: |
           npm i
           npm run build
+      - id: copy-generated-file
+        name: 'Copy the generated files to the workspace'
+        run: cp generated/typescript/* .
       - id: publish
         name: 'Publish to NPM'
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
+      - id: commit-version-changes
+        name: 'Commit bumped up version'
+        run: git status

@@ -6,7 +6,7 @@
   "author": "Siddhant Tandon <cmxiv914@gmail.com>",
   "license": "MIT",
   "files": [
-    "generated/typescript/**"
+    "*.ts"
   ],
   "scripts": {
     "build": "sh generate.sh typescript ts"
