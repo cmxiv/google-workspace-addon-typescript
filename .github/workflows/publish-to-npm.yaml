@@ -22,7 +22,7 @@ jobs:
         run: rm schema/package.json schema/yarn.lock
       - id: copy-remaining-schema-files
         name: 'Copy remaining schema files'
-        run: cp schema/* .
+        run: cp -r schema/* .
       - uses: actions/setup-node@v3
         with:
           node-version: '18'
