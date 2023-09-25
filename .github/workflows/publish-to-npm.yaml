@@ -52,4 +52,4 @@ jobs:
           rm -rf examples generated schema
       - id: push-version-changes
         name: 'Push the bumped up version'
-        run: git push
+        run: git push --follow-tags
