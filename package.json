@@ -9,7 +9,7 @@
     "*.ts"
   ],
   "scripts": {
-    "build": "sh generate.sh typescript d.ts"
+    "build": "sh generate.sh typescript ts"
   },
   "dependencies": {
     "quicktype": "^23.0.75"
