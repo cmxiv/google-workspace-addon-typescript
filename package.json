@@ -5,6 +5,7 @@
   "repository": "https://github.com/cmxiv/google-workspace-addon-json-schema",
   "author": "Siddhant Tandon <cmxiv914@gmail.com>",
   "license": "MIT",
+  "types": "index.d.ts",
   "files": [
     "*.ts"
   ],
