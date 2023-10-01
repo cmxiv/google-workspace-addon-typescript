@@ -35,7 +35,7 @@ jobs:
       - id: generate-types
         name: 'Generate the typescript types'
         run: |
-          npm i
+          npm i g quicktype
           npm run build
       - id: copy-generated-file
         name: 'Copy the generated files to the workspace'
