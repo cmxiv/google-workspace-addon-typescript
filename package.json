@@ -1,6 +1,6 @@
 {
   "name": "google-workspace-addon-typescript",
-  "version": "1.0.23",
+  "version": "1.0.24",
   "description": "Google Workspace Addon typescript types",
   "repository": "https://github.com/cmxiv/google-workspace-addon-json-schema",
   "author": "Siddhant Tandon <cmxiv914@gmail.com>",
